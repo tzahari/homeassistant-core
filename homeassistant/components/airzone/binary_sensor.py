@@ -23,10 +23,9 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from . import AirzoneConfigEntry
-from .coordinator import AirzoneUpdateCoordinator
+from .coordinator import AirzoneConfigEntry, AirzoneUpdateCoordinator
 from .entity import AirzoneEntity, AirzoneSystemEntity, AirzoneZoneEntity
 
 
@@ -77,7 +76,7 @@ ZONE_BINARY_SENSOR_TYPES: Final[tuple[AirzoneBinarySensorEntityDescription, ...]
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: AirzoneConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Add Airzone binary sensors from a config_entry."""
     coordinator = entry.runtime_data
@@ -99,12 +98,12 @@ async def async_setup_entry(
                     coordinator,
                     description,
                     entry,
-                    system_zone_id,
-                    systems_data.get(system_zone_id),
+                    system_id,
+                    systems_data.get(system_id),
                 )
-                for system_zone_id in new_systems
+                for system_id in new_systems
                 for description in SYSTEM_BINARY_SENSOR_TYPES
-                if description.key in systems_data.get(system_zone_id)
+                if description.key in systems_data.get(system_id)
             )
             added_systems.update(new_systems)
 
